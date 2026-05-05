@@ -12,7 +12,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:4000/api/auth/signup', {
+      const response = await fetch('https://assessment-awxk.vercel.app/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

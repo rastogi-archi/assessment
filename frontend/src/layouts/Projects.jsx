@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
 
-const API_URL = "http://localhost:4000/api/projects";
+const API_URL = "https://assessment-awxk.vercel.app/api/projects";
 
 const Projects = () => {
   const navigate = useNavigate();

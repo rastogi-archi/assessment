@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-const API_URL = "http://localhost:4000/api/projects";
+const API_URL = "https://assessment-awxk.vercel.app/api/projects";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const fetchUser = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:4000/api/auth/me", {
+    const res = await fetch("https://assessment-awxk.vercel.app/api/auth/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
