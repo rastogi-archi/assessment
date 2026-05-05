@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
+import API_BASE_URL from "../config/api";
 
-const API_URL = `https://localhost:4000/api/projects`;
+const API_URL = `${API_BASE_URL}/api/projects`;
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const Projects = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`https://localhost:4000/api/auth/me`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

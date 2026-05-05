@@ -16,16 +16,27 @@ const frontendDistPath = path.resolve(__dirname, '../frontend/dist');
 const allowedOrigins = [
   /^http:\/\/localhost:\d+$/,
   /^http:\/\/127\.0\.0\.1:\d+$/,
-  'https://assessment-theta-coral.vercel.app',
-  'https://assessment-awxk.vercel.app',
+  /^https:\/\/assessment-[a-z0-9-]+\.onrender\.com$/,
+  /^https:\/\/assessment-[a-z0-9-]+\.vercel\.app$/,
+  ...(process.env.CORS_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean),
 ];
 
 app.use(cors({
-  origin: [
-    "http://localhost:4000",
-    "https://assessment-3-zfnf.onrender.com"
-  ]
-}))
+  origin(origin, callback) {
+    if (
+      !origin ||
+      allowedOrigins.some((allowedOrigin) =>
+        typeof allowedOrigin === 'string' ? allowedOrigin === origin : allowedOrigin.test(origin)
+      )
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -35,6 +46,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth/me', isAuth, getMe);
 app.use(express.static(frontendDistPath));
+
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
+});
 
 await connectDB();
 

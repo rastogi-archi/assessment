@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
+import API_BASE_URL from "../config/api";
 
-const API_URL = `https://localhost:4000/api/projects`;
+const API_URL = `${API_BASE_URL}/api/projects`;
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
