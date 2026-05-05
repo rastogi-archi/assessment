@@ -39,14 +39,12 @@ const PORT = process.env.PORT || 4000;
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/auth/me',isAuth, getMe);
+app.use('/api/auth/me', isAuth, getMe);
 
-if (process.env.NODE_ENV !== 'production') {
-  await connectDB();
+await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 export default app;
