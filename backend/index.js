@@ -11,7 +11,7 @@ const app = express();
 
 app.use(cors({
     origin : ['http://localhost:5173',
-      'https://assessment-theta-coral.vercel.app/login',
+      'https://assessment-theta-coral.vercel.app',
       'https://assessment-awxk.vercel.app'
     ],
     methods : ['GET', 'POST', 'PUT', 'DELETE'],
@@ -26,7 +26,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/me',isAuth, getMe);
+app.use('/api/auth/me',isAuth, getMe);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

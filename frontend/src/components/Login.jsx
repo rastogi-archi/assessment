@@ -7,6 +7,9 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
+  const API = import.meta.env.VITE_API_URL;
+
+  await fetch(`${API}/api/auth/login`, ...)
 
   const navigate = useNavigate();
 
