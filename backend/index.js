@@ -12,7 +12,7 @@ const app = express();
 app.use(cors({
     origin : ['http://localhost:5173',
       'https://assessment-theta-coral.vercel.app/login',
-      
+      'https://assessment-awxk.vercel.app'
     ],
     methods : ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders : ['Content-Type', 'Authorization']
