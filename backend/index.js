@@ -21,21 +21,11 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin(origin, callback) {
-    if (
-      !origin ||
-      allowedOrigins.some((allowedOrigin) =>
-        typeof allowedOrigin === 'string' ? allowedOrigin === origin : allowedOrigin.test(origin)
-      )
-    ) {
-      return callback(null, true);
-    }
-
-    return callback(new Error('Not allowed by CORS'));
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  origin: [
+    "http://localhost:4000",
+    "https://assessment-3-zfnf.onrender.com"
+  ]
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -45,10 +35,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth/me', isAuth, getMe);
 app.use(express.static(frontendDistPath));
-
-app.get(/^(?!\/api).*/, (req, res) => {
-  res.sendFile(path.join(frontendDistPath, 'index.html'));
-});
 
 await connectDB();
 
