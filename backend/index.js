@@ -10,7 +10,10 @@ import { isAuth } from './Middlewares/Auth.middlewares.js';
 const app = express();
 
 app.use(cors({
-    origin : 'http://localhost:5173',
+    origin : ['http://localhost:5173',
+      'https://assessment-theta-coral.vercel.app/login',
+      
+    ],
     methods : ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders : ['Content-Type', 'Authorization']
 }))
