@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../Models/User.models.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change_this_secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
 
 const createToken = (user) =>
@@ -45,23 +45,43 @@ export const registerUser = async (req, res) => {
   }
 };
 
-export const loginUser = async (req, res) => {
-  const email = req.body?.email;
-  const password = req.body?.password;
 
-  if (!email || !password) {
-    return sendError(res, 400, 'Email and password are required');
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user || user.password !== password) {
+    return res.status(400).json({ message: "Invalid credentials" });
   }
 
-  try {
-    const user = await User.findOne({ email });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return sendError(res, 401, 'Invalid credentials');
-    }
+  const token = jwt.sign(
+    { id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
 
-    return res.status(200).json({ message: 'Login successful', token: createToken(user) });
+  res.json({
+    success: true,
+    token,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    },
+  });
+};
+
+export const getMe = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      user: req.user,
+    });
   } catch (error) {
-    console.error('Login error:', error);
-    return sendError(res, 500, 'Server error');
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

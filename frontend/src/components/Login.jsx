@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -10,11 +10,13 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/dashboard');
-    }
-  }, [navigate]);
+ useEffect(() => {
+  const token = localStorage.getItem('token');
+
+  if (token && window.location.pathname !== "/dashboard") {
+    navigate("/dashboard");
+  }
+}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

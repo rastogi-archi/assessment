@@ -4,6 +4,8 @@ import connectDB from './Utils/db.js';
 import authRoutes from './Routes/Auth.routes.js';
 import projectRoutes from './Routes/Project.routes.js';
 import cors from 'cors';
+import { getMe } from './Controllers/Auth.controllers.js';
+import { isAuth } from './Middlewares/Auth.middlewares.js';
 
 const app = express();
 
@@ -21,6 +23,7 @@ connectDB();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/me',isAuth, getMe);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

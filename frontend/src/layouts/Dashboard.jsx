@@ -9,13 +9,27 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchProjects();
+  fetchProjects();
+  fetchUser();
+}, []);
 
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+const fetchUser = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch("http://localhost:4000/api/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    setUser(data.user);
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const fetchProjects = async () => {
     try {
