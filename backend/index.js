@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import connectDB from './Utils/db.js';
 import authRoutes from './Routes/Auth.routes.js';
 import projectRoutes from './Routes/Project.routes.js';
@@ -8,6 +10,8 @@ import { getMe } from './Controllers/Auth.controllers.js';
 import { isAuth } from './Middlewares/Auth.middlewares.js';
 
 const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const frontendDistPath = path.resolve(__dirname, '../frontend/dist');
 
 const allowedOrigins = [
   /^http:\/\/localhost:\d+$/,
@@ -40,6 +44,11 @@ const PORT = process.env.PORT || 4000;
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth/me', isAuth, getMe);
+app.use(express.static(frontendDistPath));
+
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(frontendDistPath, 'index.html'));
+});
 
 await connectDB();
 
