@@ -27,13 +27,21 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />
+            isAuthenticated ? (
+              <Dashboard onLogout={() => setIsAuthenticated(false)} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
         <Route
           path="/projects"
           element={
-            isAuthenticated ? <Projects /> : <Navigate to="/login" replace />
+            isAuthenticated ? (
+              <Projects onLogout={() => setIsAuthenticated(false)} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
       </Routes>

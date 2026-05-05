@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
 import API_BASE_URL from "../config/api";
 
 const API_URL = `${API_BASE_URL}/api/projects`;
 
-const Dashboard = () => {
+const Dashboard = ({ onLogout }) => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [user, setUser] = useState(null);
   const token = localStorage.getItem("token");
@@ -13,7 +14,8 @@ const Dashboard = () => {
   const redirectToLogin = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.replace("/login");
+    onLogout?.();
+    navigate("/login", { replace: true });
   };
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import API_BASE_URL from "../config/api";
 
 const API_URL = `${API_BASE_URL}/api/projects`;
 
-const Projects = () => {
+const Projects = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const [projects, setProjects] = useState([]);
@@ -120,6 +120,7 @@ const Projects = () => {
 
   const handleLogout = () => {
     localStorage.clear();
+    onLogout?.();
     navigate("/login", { replace: true });
   };
 
