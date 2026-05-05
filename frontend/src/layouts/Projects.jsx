@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
 
-const API_URL = (import.meta.env.VITE_API_URL || "") + "/api/projects";
+const API_URL = "http://localhost:4000/api/projects";
 
 const Projects = () => {
   const navigate = useNavigate();
@@ -23,10 +23,35 @@ const Projects = () => {
 
   useEffect(() => {
     fetchProjects();
-
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    fetchUser();
   }, []);
+
+  const fetchUser = async () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) return;
+
+      const data = await res.json();
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -94,7 +119,7 @@ const Projects = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -112,16 +137,16 @@ const Projects = () => {
 
           <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
             <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center">
-              {user?.name?.charAt(0) || "U"}
+              {user?.fullName?.charAt(0) || "U"}
             </div>
             <span className="text-sm text-blue-900">
-              {user?.name || "User"}
+              {user?.fullName || "User"}
             </span>
           </div>
 
           <button
             onClick={handleLogout}
-            className=" text-gray px-3 py-2 text-2xl"
+            className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600"
           >
             <IoIosLogOut />
           </button>

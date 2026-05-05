@@ -1,12 +1,13 @@
 import { Route, Routes, Navigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Dashboard from "./layouts/Dashboard";
 import Projects from "./layouts/Projects";
 
 function App() {
-  const isAuthenticated = !!localStorage.getItem("token");
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
 
   return (
     <>
@@ -15,10 +16,10 @@ function App() {
         <Route
           path="/login"
           element={
-            localStorage.getItem("token") ? (
-              <Navigate to="/dashboard" />
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
             ) : (
-              <Login />
+              <Login onLogin={() => setIsAuthenticated(true)} />
             )
           }
         />

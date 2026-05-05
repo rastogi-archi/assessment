@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
-  const API = import.meta.env.VITE_API_URL || '';
 
   const navigate = useNavigate();
-
- useEffect(() => {
-  const token = localStorage.getItem('token');
-
-  if (token && window.location.pathname !== "/dashboard") {
-    navigate("/dashboard");
-  }
-}, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API}/api/auth/login`, {
+      const response = await fetch('http://localhost:4000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,8 +22,10 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        onLogin?.();
         toast.success('Login successful');
-        navigate("/dashboard")
+        navigate('/dashboard', { replace: true });
       } else {
         toast.error(data.message || 'Login failed');
       }

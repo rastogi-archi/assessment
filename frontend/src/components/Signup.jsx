@@ -3,7 +3,6 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const API = import.meta.env.VITE_API_URL || '';
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -13,7 +12,7 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API}/api/auth/signup`, {
+      const response = await fetch('http://localhost:4000/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

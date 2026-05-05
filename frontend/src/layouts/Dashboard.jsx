@@ -1,36 +1,49 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { IoIosLogOut } from "react-icons/io";
 
-const API_URL = (import.meta.env.VITE_API_URL || "") + "/api/projects";
-const API = import.meta.env.VITE_API_URL || "";
+const API_URL = "http://localhost:4000/api/projects";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [user, setUser] = useState(null);
+  const token = localStorage.getItem("token");
+
+  const redirectToLogin = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.replace("/login");
+  };
 
   useEffect(() => {
-  fetchProjects();
-  fetchUser();
-}, []);
+    if (!token) {
+      redirectToLogin();
+      return;
+    }
 
-const fetchUser = async () => {
-  try {
-    const token = localStorage.getItem("token");
+    fetchProjects();
+    fetchUser();
+  }, [token]);
 
-    const res = await fetch(`${API}/api/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/api/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const data = await res.json();
+      if (res.status === 401) {
+        redirectToLogin();
+        return;
+      }
 
-    setUser(data.user);
-  } catch (err) {
-    console.error(err);
-  }
-};
+      const data = await res.json();
+      setUser(data.user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchProjects = async () => {
     try {
@@ -43,9 +56,7 @@ const fetchUser = async () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
+    redirectToLogin();
   };
 
   const allTasks = projects.flatMap((p) => p.tasks || []);
@@ -78,10 +89,10 @@ const fetchUser = async () => {
           {/* Profile */}
           <div className="flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
             <div className="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center">
-              {user?.name?.charAt(0) || "U"}
+              {user?.fullName?.charAt(0) || "U"}
             </div>
             <span className="text-sm text-blue-900">
-              {user?.name || "User"}
+              {user?.fullName || "User"}
             </span>
           </div>
 
@@ -89,7 +100,7 @@ const fetchUser = async () => {
             onClick={handleLogout}
             className="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600"
           >
-            Logout
+            <IoIosLogOut />
           </button>
         </div>
       </div>
@@ -189,13 +200,12 @@ const fetchUser = async () => {
                   </div>
 
                   <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      task.status === "completed"
+                    className={`text-xs px-2 py-1 rounded ${task.status === "completed"
                         ? "bg-green-100 text-green-700"
                         : task.status === "in progress"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
                   >
                     {task.status}
                   </span>
